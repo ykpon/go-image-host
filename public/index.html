@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>File upload</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      
+      .column {
+        float: left;
+        padding: 5px;
+      }
+
+      .column input {
+        width: 100%;
+      }
+      
+      /* Clearfix (clear floats) */
+      .row::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+      </style>
+  </head>
+  <body>
+    <div class="row" id="images"></div>
+    <script>
+      function addImage(path, name, host) {
+        var element = document.createElement("div");
+        element.className = "column";
+        element.innerHTML = "<input type=\"text\" value=\"https://" + host + path + "\"><br><img src=\"" + path + "\" alt=\"" + name + "\" style=\"width:300px\">";
+        document.getElementById("images").appendChild(element);
+
+      }
+
+      let fileInput = document.getElementById("file_upload_input");
+
+      window.addEventListener("paste", e => {
+        let formData = new FormData();
+        formData.append("image", e.clipboardData.files[0])
+        let request = new XMLHttpRequest();
+        request.open("POST", location.protocol + "//" + window.location.host + "/upload", true);
+        request.responseType = "json";
+
+        request.onload = function(oEvent) {
+          if (request.status == 200) {
+            addImage(request.response.Path, request.response.Name, request.response.Host)
+          } else {
+            console.log(request.status)
+          }
+        };
+      
+        request.send(formData);
+      });
+    </script>
+  </body>
+</html>
