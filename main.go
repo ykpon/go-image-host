@@ -19,7 +19,7 @@ type Result struct {
 }
 
 const publicDir = "public"
-const uploadDir = "/upload"
+const uploadDir = "/uploads"
 
 var filenameLength *int
 
