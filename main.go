@@ -22,6 +22,7 @@ const publicDir = "public"
 const uploadDir = "/uploads"
 
 var filenameLength *int
+var hostname *string
 
 // Create directory
 func createDirectory(path string) {
@@ -94,7 +95,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := Result{Path: filepath, Name: filename, Host: r.Host}
+	result := Result{Path: filepath, Name: filename, Host: *hostname}
 	js, err := json.Marshal(result)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -119,6 +120,7 @@ func setupRoutes(frontendHandle bool) {
 func main() {
 	var frontendHandle = flag.Bool("frontend", false, "Add handle for / static files")
 	filenameLength = flag.Int("filename-length", 6, "Set max length for filename")
+	hostname = flag.String("hostname", "localhost", "Hostname of your server")
 	flag.Parse()
 	fmt.Println("["+time.Now().Format("2006-01-02 15:04:05")+"]", "Server started...")
 	setupRoutes(*frontendHandle)
